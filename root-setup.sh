@@ -78,7 +78,7 @@ ssh_path=$new_user_path/.ssh/git_ssh
 rsec_working_dir=$new_user_path/realizesec_dot_com
 echo
 echo "[!] Creating new SSH key for Git [!]"
-ssh-keygen -C "richard@realizesec.com" -f $ssh_path 
+ssh-keygen -t ed25519 -C "richard@realizesec.com" -f $ssh_path 
 ssh-add $ssh_path  
 echo "[#] Copy this public key value into Github"
 cat $ssh_path.pub
