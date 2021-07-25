@@ -78,13 +78,13 @@ ssh_path=$new_user_path/.ssh/git_ssh
 rsec_working_dir=$new_user_path/realizesec_dot_com
 echo
 echo "[!] Creating new SSH key for Git [!]"
-ssh-keygen -C "richard@realizese.com" -f $ssh_path 
+ssh-keygen -C "richard@realizesec.com" -f $ssh_path 
 ssh-add $ssh_path  
 echo "[#] Copy this public key value into Github"
 cat $ssh_path.pub
 chown -R $newuser:$newuser $new_user_path/.ssh
 echo
-read -p "Press enter when done ready to clone Git"
+read -p "Press enter when done ready to clone Git repo..."
 
 git clone git@github.com:Realize-Security/realizesec_dot_com.git
 mv realizesec_dot_com $rsec_working_dir
@@ -95,3 +95,4 @@ chown -R $newuser:$newuser $rsec_working_dir
 
 echo "*** Setup complete. Press enter to reboot. Then log in with $newuser. ***" 
 read -p  "[!] SSH root access now disabled. [!]"
+reboot
