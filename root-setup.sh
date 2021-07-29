@@ -78,7 +78,8 @@ ssh_path=$new_user_path/.ssh/git_ssh
 rsec_working_dir=$new_user_path/realizesec_dot_com
 echo
 echo "[!] Creating new SSH key for Git [!]"
-ssh-keygen -C "richard@realizesec.com" -f $ssh_path 
+ssh-keygen -t ed25519 -C "richard@realizesec.com" -f $ssh_path 
+eval "$(ssh-agent -s)" 1>/dev/null
 ssh-add $ssh_path  
 echo "[#] Copy this public key value into Github"
 cat $ssh_path.pub
@@ -87,12 +88,18 @@ echo
 read -p "Press enter when done ready to clone Git repo..."
 
 git clone git@github.com:Realize-Security/realizesec_dot_com.git
-mv realizesec_dot_com $rsec_working_dir
+unzip realizesec_certs.zip
 mkdir -p $rsec_working_dir/nginx/certs/PROD
-mv fullchain.pem $rsec_working_dir/nginx/certs/PROD/
-mv privkey.pem $rsec_working_dir/nginx/certs/PROD/
+cp realizesec_certs/fullchain.pem $rsec_working_dir/nginx/certs/PROD/
+cp realizesec_certs/privkey.pem $rsec_working_dir/nginx/certs/PROD/
 chown -R $newuser:$newuser $rsec_working_dir
+rm $ssh_path*
+rm realizesec_certs
+chown root:root realizesec_certs.zip
+chmod 700 realizesec_certs.zip
+
 
 echo "*** Setup complete. Press enter to reboot. Then log in with $newuser. ***" 
+echo "*** Execute docker-compose file to deploy app on reboot ***" 
 read -p  "[!] SSH root access now disabled. [!]"
 reboot
