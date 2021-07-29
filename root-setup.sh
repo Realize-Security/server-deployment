@@ -101,19 +101,12 @@ cp realizesec_certs/fullchain.pem $rsec_working_dir/nginx/certs/PROD/
 cp realizesec_certs/privkey.pem $rsec_working_dir/nginx/certs/PROD/
 chown -R $newuser:$newuser $rsec_working_dir
 rm $ssh_path*
-<<<<<<< HEAD
 rm -rf realizesec_certs/
 rm -rf realizesec_dot_com/.git
 chown root:root realizesec_certs.zip
 chown root:root setup.sh
 chmod 700 realizesec_certs.zip
 chmod 700 setup.sh
-=======
-rm -rf realizesec_certs
-chown root:root realizesec_certs.zip
-chmod 700 realizesec_certs.zip
-
->>>>>>> e97fb2051379489443eb7bd9c26335af5320095f
 
 echo "*** Setup complete. Press enter to reboot. Then log in with $newuser. ***" 
 echo "*** Execute docker-compose file to deploy app on reboot ***" 
