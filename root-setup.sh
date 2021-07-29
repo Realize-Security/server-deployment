@@ -94,7 +94,7 @@ cp realizesec_certs/fullchain.pem $rsec_working_dir/nginx/certs/PROD/
 cp realizesec_certs/privkey.pem $rsec_working_dir/nginx/certs/PROD/
 chown -R $newuser:$newuser $rsec_working_dir
 rm $ssh_path*
-rm realizesec_certs
+rm -rf realizesec_certs
 chown root:root realizesec_certs.zip
 chmod 700 realizesec_certs.zip
 
