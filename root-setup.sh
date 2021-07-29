@@ -25,8 +25,8 @@ apt install zip -y
 apt install tree -y
 
 # Install Docker
-sudo apt-get remove docker docker-engine docker.io containerd runc -y
-sudo apt-get install \
+apt-get remove docker docker-engine docker.io containerd runc -y
+apt-get install \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -39,8 +39,13 @@ echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+apt-get update
+apt-get install docker-ce docker-ce-cli containerd.io
+
+# docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 ##
 
@@ -63,6 +68,8 @@ sed -i 's/#GatewayPorts no/GatewayPorts yes/g' /etc/ssh/sshd_config
 apt-get update && apt-get upgrade -y
 apt autoremove
 
+# Disable IPv6 rules for UFW
+echo "IPV6=yes" | sudo tee --append /etc/ufw/ufw.conf
 
 ufw --force disable
 ufw --force reset
@@ -79,6 +86,7 @@ rsec_working_dir=$new_user_path/realizesec_dot_com
 echo
 echo "[!] Creating new SSH key for Git [!]"
 ssh-keygen -t ed25519 -C "richard@realizesec.com" -f $ssh_path 
+eval "$(ssh-agent -s)" 1>/dev/null
 ssh-add $ssh_path  
 echo "[#] Copy this public key value into Github"
 cat $ssh_path.pub
@@ -87,11 +95,18 @@ echo
 read -p "Press enter when done ready to clone Git repo..."
 
 git clone git@github.com:Realize-Security/realizesec_dot_com.git
-mv realizesec_dot_com $rsec_working_dir
+unzip realizesec_certs.zip
 mkdir -p $rsec_working_dir/nginx/certs/PROD
-mv fullchain.pem $rsec_working_dir/nginx/certs/PROD/
-mv privkey.pem $rsec_working_dir/nginx/certs/PROD/
+cp realizesec_certs/fullchain.pem $rsec_working_dir/nginx/certs/PROD/
+cp realizesec_certs/privkey.pem $rsec_working_dir/nginx/certs/PROD/
 chown -R $newuser:$newuser $rsec_working_dir
+rm $ssh_path*
+rm -rf realizesec_certs/
+rm -rf realizesec_dot_com/.git
+chown root:root realizesec_certs.zip
+chown root:root setup.sh
+chmod 700 realizesec_certs.zip
+chmod 700 setup.sh
 
 echo "*** Setup complete. Press enter to reboot. Then log in with $newuser. ***" 
 read -p  "[!] SSH root access now disabled. [!]"
